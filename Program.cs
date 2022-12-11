@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -20,27 +20,36 @@ namespace Hash_Calculator_c_Sharp
                     filePath = filePath.Substring(1, filePath.Length - 2);
                 }
 
-                using (var md5 = MD5.Create())
+                if (File.Exists(filePath))
                 {
-                    using (var stream = File.OpenRead(filePath))
+
+
+                    using (var md5 = MD5.Create())
                     {
-                        byte[] hash = md5.ComputeHash(stream);
-                        string md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-
-                        Console.Write("Enter the MD5 hash: ");
-                        userHash = Console.ReadLine();
-
-                        if (md5Hash == userHash)
+                        using (var stream = File.OpenRead(filePath))
                         {
-                            Console.WriteLine("The hashes match.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("The hashes do not match.");
-                            Console.WriteLine($"Calculated hash: {md5Hash}");
-                            Console.WriteLine($"User input hash: {userHash}");
+                            byte[] hash = md5.ComputeHash(stream);
+                            string md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+
+                            Console.Write("Enter the MD5 hash: ");
+                            userHash = Console.ReadLine();
+
+                            if (md5Hash == userHash)
+                            {
+                                Console.WriteLine("The hashes match.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("The hashes do not match.");
+                                Console.WriteLine($"Calculated hash: {md5Hash}");
+                                Console.WriteLine($"User input hash: {userHash}");
+                            }
                         }
                     }
+                }
+                else
+                {
+                    Console.WriteLine($"Directory {filePath} does not exist!");
                 }
 
                 Console.WriteLine("Press r to restart, q to quit the program.");
