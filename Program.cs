@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Hash_Calculator_c_Sharp
+namespace Terminal-Hash-Calculator
 {
     class Program
     {
@@ -59,6 +59,10 @@ namespace Hash_Calculator_c_Sharp
                 if (key == 'q')
                 {
                     break;
+                }
+                if (key == 's')
+                {
+                    
                 }
                 else
                 {
