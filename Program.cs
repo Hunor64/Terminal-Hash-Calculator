@@ -68,11 +68,11 @@ namespace TerminalHashCalculator
                     var saveLocation = Console.ReadLine();
                     if (hashMatch)
                     {
-                        File.WriteAllText(saveLocation, "The hashes matched!" + "\n" + "The calculated hash was: " + md5Hash);
+                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + " the hashes matched!" + "\n" + "The calculated hash was: " + md5Hash);
                     }
                     else if (!hashMatch)
                     {
-                        File.WriteAllText(saveLocation, "The hashes did not match" + "\n" + "The calculated hash was: " + md5Hash + "\n" + "User input hash was: " + userHash);
+                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + " the hashes did not match" + "\n" + "The calculated hash was: " + md5Hash + "\n" + "User input hash was: " + userHash);
                     }
 
                     Console.WriteLine("Saved!");
