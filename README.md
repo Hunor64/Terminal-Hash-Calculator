@@ -1,2 +1,2 @@
 # Terminal-Hash-Calculator
-Simple C# Hash Calculator
+The code is a simple terminal-based program that calculates the hash of a file using a specified hashing algorithm. It supports three algorithms: MD5, SHA-256, and SHA-512. The user can specify the file path and the desired algorithm, and the program will calculate the hash of the file and print it out. The user can also enter a hash value and the program will compare it to the calculated hash and tell the user whether the two values match or not.
