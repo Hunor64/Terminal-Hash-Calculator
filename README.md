@@ -1,2 +1,2 @@
 # Terminal-Hash-Calculator
-Simple c sharp hash calculator
+Simple C# Hash Calculator
