@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace TerminalHashCalculator
 {
@@ -8,17 +9,19 @@ namespace TerminalHashCalculator
     {
         static void Main(string[] args)
         {
-            string md5Hash = "";
+            string calculatedHash = "";
             bool runSucsess = false;
             bool hashMatch = false;
             string userHash = "";
+            var key = '0';
             while (true)
             {
                 runSucsess = false;
                 Console.Clear();
                 Console.Write("Enter the file path: ");
                 string filePath = Console.ReadLine();
-
+                Console.Write($"Supported hash calculation methods:\nmd5\nsha-256\nsha-512\nEnter the file calculation method: ");
+                string calculationMethod = Console.ReadLine().ToLower();
                 if (filePath.StartsWith('"') && filePath.EndsWith('"'))
                 {
                     filePath = filePath.Substring(1, filePath.Length - 2);
@@ -27,23 +30,59 @@ namespace TerminalHashCalculator
                 if (File.Exists(filePath))
                 {
                     runSucsess = true;
-                    var md5 = MD5.Create();
-                    var stream = File.OpenRead(filePath);
-                    byte[] hash = md5.ComputeHash(stream);
-                    md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    if (calculationMethod == "md5")
+                    {
+                        var md5 = MD5.Create();
+                        var stream = File.OpenRead(filePath);
+                        byte[] hash = md5.ComputeHash(stream);
+                        calculatedHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    }
+                    else if (calculationMethod == "sha-256" || calculationMethod == "sha256")
+                    {
+                        using (FileStream stream = File.OpenRead(filePath))
+                        {
+                            SHA256 sha256 = SHA256.Create();
 
-                    Console.Write("Enter the MD5 hash: ");
+                            byte[] hash = sha256.ComputeHash(stream);
+
+                            calculatedHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
+                        }
+                    }
+                    else if (calculationMethod == "sha-512" || calculationMethod == "sha512")
+                    {
+                        using (FileStream stream = File.OpenRead(filePath))
+                        {
+                            SHA512 sha512 = SHA512.Create();
+
+                            byte[] hash = sha512.ComputeHash(stream);
+
+                            calculatedHash = BitConverter.ToString(hash).Replace("-", "").ToLower();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Calculation method was not found!");
+                        Console.WriteLine("Press r to restart, q to quit the program.");
+                        key = Console.ReadKey().KeyChar;
+                        if (key == 'q')
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    Console.Write($"Enter the {calculationMethod} hash: ");
                     userHash = Console.ReadLine();
-
-                    if (md5Hash == userHash)
+                    if (calculatedHash == userHash)
                     {
                         Console.WriteLine("The hashes match.");
-                        hashMatch = true;
                     }
                     else
                     {
                         Console.WriteLine("The hashes do not match.");
-                        Console.WriteLine($"Calculated hash: {md5Hash}");
+                        Console.WriteLine($"Calculated hash: {calculatedHash}");
                         Console.WriteLine($"User input hash: {userHash}");
                         hashMatch = false;
                     }
@@ -55,7 +94,7 @@ namespace TerminalHashCalculator
 
                 Console.WriteLine("Press r to restart, q to quit the program or s to save it.");
 
-                var key = Console.ReadKey().KeyChar;
+                key = Console.ReadKey().KeyChar;
 
                 if (key == 'q')
                 {
@@ -68,11 +107,11 @@ namespace TerminalHashCalculator
                     var saveLocation = Console.ReadLine();
                     if (hashMatch)
                     {
-                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + " the hashes matched!" + "\n" + "The calculated hash was: " + md5Hash);
+                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + ' ' + calculationMethod + " hashes matched!" + "\n" + "The calculated hash was: " + calculatedHash);
                     }
                     else if (!hashMatch)
                     {
-                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + " the hashes did not match" + "\n" + "The calculated hash was: " + md5Hash + "\n" + "User input hash was: " + userHash);
+                        File.WriteAllText(saveLocation, "For file " + '"' + filePath + '"' + ' ' + calculationMethod + " hashes did not match" + "\n" + "The calculated hash was: " + calculatedHash + "\n" + "User input hash was: " + userHash);
                     }
 
                     Console.WriteLine("Saved!");
